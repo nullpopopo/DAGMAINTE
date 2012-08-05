@@ -9,7 +9,7 @@ REPOFILE=dag.repo
 
 #------------------------------------------------------------------------------#
 MAKECONF() {
-cat << _EOF_ > $CONF
+cat << '_EOF_' > $CONF
 [dag]
 name=DAG: RPM packages for CentOS
 baseurl=http://ftp.riken.jp/Linux/dag/redhat/el$releasever/en/$basearch/dag/
