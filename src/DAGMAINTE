@@ -40,9 +40,11 @@ case $1 in
       if [ -f ${REPOD}/${REPOFILE} ]
       then
         sudo sed -i -e 's/enabled=0/enabled=1/g' ${REPOD}/${REPOFILE}
+        sudo chown root:root ${REPOD}/${REPOFILE}
       else
         $0 install
         sudo sed -i -e 's/enabled=0/enabled=1/g' ${REPOD}/${REPOFILE}
+        sudo chown root:root ${REPOD}/${REPOFILE}
       fi
     ;;
   [dD][iI][sS][aA][bB][lL][eE])
