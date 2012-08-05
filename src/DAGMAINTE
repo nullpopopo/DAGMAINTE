@@ -1,6 +1,5 @@
 #!/bin/bash
 LANG=C
-MAILTO=you@example.com
 
 ETC=${HOME}/etc
 CONF=${ETC}/dag.conf
