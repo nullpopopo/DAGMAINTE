@@ -1,0 +1,60 @@
+#!/bin/bash
+LANG=C
+MAILTO=you@example.com
+
+ETC=${HOME}/etc
+CONF=${ETC}/dag.conf
+REPOD=/etc/yum.repos.d
+REPOFILE=dag.repo
+
+#------------------------------------------------------------------------------#
+MAKECONF() {
+cat << _EOF_ > $CONF
+[dag]
+name=DAG: RPM packages for CentOS
+baseurl=http://ftp.riken.jp/Linux/dag/redhat/el$releasever/en/$basearch/dag/
+enabled=0
+gpgcheck=1
+#gpgkey=http://ftp.riken.jp/Linux/dag/packages/RPM-GPG-KEY.dag.txt
+gpgkey=http://dag.wieers.com/packages/RPM-GPG-KEY.dag.txt
+_EOF_
+}
+#------------------------------------------------------------------------------#
+[ ! -d ${ETC} ] && mkdir -p ${ETC}
+[ ! -f ${CONF} ] && MAKECONF
+#------------------------------------------------------------------------------#
+
+case $1 in
+  [iI][nN][sS][tT][aA][lL][lL])
+    if [ -f ${CONF} ]
+    then
+      sudo cp -p ${CONF} ${REPOD}/${REPOFILE}
+    else
+      MAKECONF && sudo cp -p ${CONF} ${REPOD}/${REPOFILE}
+      sudo chown root:root ${REPOD}/${REPOFILE}
+    fi
+    ;;
+  [uU][nN][iI][nN][sS][tT][aA][lL][lL])
+      [ -f ${REPOD}/${REPOFILE} ] && sudo rm -f ${REPOD}/${REPOFILE}
+    ;;
+  [eE][nN][aA][bB][lL][eE])
+      if [ -f ${REPOD}/${REPOFILE} ]
+      then
+        sudo sed -i -e 's/enabled=0/enabled=1/g' ${REPOD}/${REPOFILE}
+      else
+        $0 install
+        sudo sed -i -e 's/enabled=0/enabled=1/g' ${REPOD}/${REPOFILE}
+      fi
+    ;;
+  [dD][iI][sS][aA][bB][lL][eE])
+      if [ -f ${REPOD}/${REPOFILE} ]
+      then
+        sudo sed -i -e 's/enabled=1/enabled=0/g' ${REPOD}/${REPOFILE}
+      else
+        $0 install
+      fi
+    ;;
+  *)
+    echo "USAGE: ${PROG} {install|uninstall|enable|disable}"
+    ;;
+esac
